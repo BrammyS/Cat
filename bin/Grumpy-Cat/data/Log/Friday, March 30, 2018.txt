@@ -1,0 +1,4 @@
+30/03/2018 22:39:18 : Discord.Net v1.0.2 (API v6)
+30/03/2018 22:39:18 : GET voice/regions: 207,12 ms
+30/03/2018 22:39:19 : Connecting
+30/03/2018 22:39:20 : GET gateway: 1247,1 ms
