@@ -87,6 +87,13 @@ namespace Cat.UserAccounts
             UserAccounts.SaveAccounts(user, guild);
         }
 
+        public static void LastMessageSend(SocketUser user, SocketGuild guild)
+        {
+            var account = UserAccounts.GetAccount(user, guild);
+            account.LastMessageSend = DateTime.Now;
+            UserAccounts.SaveAccounts(user, guild);
+        }
+
         public static void TimesTimedOut(SocketUser user, SocketGuild guild)
         {
             var account = UserAccounts.GetAccount(user, guild);

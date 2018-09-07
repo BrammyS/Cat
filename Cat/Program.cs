@@ -40,8 +40,7 @@ namespace Cat
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
-            await Restart(_client, args);
-            await Task.Delay(-1);
+            await Task.Delay(1800000);
         }
 
         private Task Log(LogMessage msg)
@@ -49,17 +48,6 @@ namespace Cat
             Global.log($"Data/Log/{DateTime.Now:dddd, MMMM d, yyyy}.txt", msg.Message);
             Console.WriteLine($"{DateTime.Now:G}" + " : " + msg.Message);
             return Task.CompletedTask;
-        }
-
-        public async Task Restart(DiscordSocketClient client, string[] args)
-        {
-            while (true)
-            {
-                await Task.Delay(2520000);
-                Console.WriteLine("\r\nRestarting...");
-                await _client.LogoutAsync();
-                Main(_args);
-            }
         }
     }
 }

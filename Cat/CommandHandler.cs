@@ -51,7 +51,7 @@ namespace Cat
             if (msg.HasStringPrefix(Config.bot.cmdPrefix, ref argPos)|| msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || msg.HasStringPrefix(server.Prefix, ref argPos) && !context.User.IsBot)
             {
                 var account = UserAccounts.UserAccounts.GetAccount(context.User, context.Guild);
-                if (DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds > 6)
+                if (DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds > 3)
                 {
                     if(DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds > 180) account.TimesTimedOut = 0;
                     var result = await _service.ExecuteAsync(context, argPos);
@@ -86,7 +86,7 @@ namespace Cat
                     else if(DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds > 0)
                     {
                         UserLeveling.TimesTimedOut(context.User, context.Guild);
-                        await context.Channel.SendMessageAsync($"pls wait {6 - Math.Round(DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds, 0)}s before using another commands.");
+                        await context.Channel.SendMessageAsync($"pls wait {3 - Math.Round(DateTime.Now.Subtract(account.LastCommandUsed).TotalSeconds, 0)}s before using another commands.");
                     }
                     
                 }
@@ -97,9 +97,17 @@ namespace Cat
         public Task userSendMessage(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
-            var context = new SocketCommandContext(_client, msg);
-            //adding xp for sending message 
-            if(!context.User.IsBot) UserLeveling.AddXp(context.User, context.Guild, 3);
+            var context = new SocketCommandContext(_client, msg);       
+            var account = UserAccounts.UserAccounts.GetAccount(context.User, context.Guild);
+            Console.WriteLine(DateTime.Now.Subtract(account.LastMessageSend).TotalSeconds);
+            if (DateTime.Now.Subtract(account.LastMessageSend).TotalSeconds > 15)
+            {
+                if (!context.User.IsBot)
+                {
+                    UserLeveling.AddXp(context.User, context.Guild, 2);
+                    UserLeveling.LastMessageSend(context.User, context.Guild);
+                }
+            }
             return Task.CompletedTask;
         }
 

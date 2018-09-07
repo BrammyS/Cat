@@ -29,6 +29,7 @@ namespace Cat.UserAccounts
         public ulong TimeConnectedYear { get; set; }
 
         public DateTime LastCommandUsed { get; set; }
+        public DateTime LastMessageSend { get; set; }
 
         public ulong TimesTimedOut { get; set; }
     }
