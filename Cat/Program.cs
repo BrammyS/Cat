@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Cat
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        static async Task Main()
         {
             Console.WriteLine("Hello World!");
         }
