@@ -1,5 +1,6 @@
 ﻿using Cat.Discord;
 using Cat.Discord.Configurations;
+using Cat.Discord.Handlers;
 using Cat.Discord.Interfaces;
 using Cat.Discord.Services;
 using Cat.Discord.Services.Implementations;
@@ -36,6 +37,7 @@ namespace Cat
             container.RegisterSingleton<DiscordShardedClient>(new InjectionConstructor(typeof(DiscordSocketConfig)));
 
             container.RegisterSingleton<IConnection, Connection>();
+            container.RegisterSingleton<ICommandHandler, CommandHandler>();
             container.RegisterSingleton<ICat, Cat>();
 
             container.RegisterType<IDiscordLogger, DiscordLogger>(new PerThreadLifetimeManager());

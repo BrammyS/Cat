@@ -14,12 +14,14 @@ namespace Cat.Discord
         private readonly DiscordShardedClient _client;
         private readonly IDiscordLogger _discordLogger;
         private readonly ILogger _logger;
+        private readonly ICommandHandler _commandHandler;
 
-        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger)
+        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler)
         {
             _client = client;
             _discordLogger = discordLogger;
             _logger = logger;
+            _commandHandler = commandHandler;
         }
         
         public async Task ConnectAsync()
@@ -30,6 +32,7 @@ namespace Cat.Discord
 
             await _client.LoginAsync(TokenType.Bot, ConfigData.Data.Token).ConfigureAwait(false);
             await _client.StartAsync().ConfigureAwait(false);
+            await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
 
             await Task.Delay(ConfigData.Data.RestartTime * 60000).ConfigureAwait(false);
             await _client.StopAsync().ConfigureAwait(false);
