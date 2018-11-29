@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Cat.Interfaces;
 
 namespace Cat
 {
@@ -7,7 +7,9 @@ namespace Cat
     {
         static async Task Main()
         {
-            Console.WriteLine("Hello World!");
+            Unity.RegisterTypes();
+            var bot = Unity.Resolve<ICat>();
+            await bot.StartAsync().ConfigureAwait(false);
         }
     }
 }
