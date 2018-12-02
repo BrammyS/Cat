@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
@@ -28,17 +29,18 @@ namespace Cat.Discord.Commands
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
                     var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
+                    var position = await unitOfWork.UserInfos.FindPosition(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
                     _embed.WithTitle($"Info for {Context.User.Username}");
                     if (user != null)
                     {
                         _embed.AddField("Level", $"{user.Level}", true);
                         _embed.AddField("Xp", $"{user.Xp}", true);
-                        _embed.AddField("Next level", $"next level in 230Xp", true);
+                        _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25)}Xp", true);
                         _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
                     }
 
                     _embed.AddField("Join date", $"{Context.Guild.GetUser(Context.User.Id).JoinedAt:MM/dd/yyyy}", true);
-                    _embed.AddField("Position", $"6", true);
+                    _embed.AddField("Position", $"{position + 1}", true);
                     await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
                     _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
                 }
