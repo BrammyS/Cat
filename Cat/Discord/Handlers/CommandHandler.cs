@@ -58,10 +58,13 @@ namespace Cat.Discord.Handlers
                 if (msg.Author.IsBot) return;
                 var context = new ShardedCommandContext(_client, msg);
                 var argPos = 0;
-                if (context.Message.HasStringPrefix("?", ref argPos) || context.Message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+                if (context.Message.HasStringPrefix("?", ref argPos) || 
+                    context.Message.HasMentionPrefix(_client.CurrentUser, ref argPos))
                 {
-                    await context.Channel.SendMessageAsync("jas goed");
-
+                    var searchResult = _commandService.Search(context, argPos);
+                    if (searchResult.Commands == null || searchResult.Commands.Count == 0) return;
+                    var result = await _commandService.ExecuteAsync(context, argPos, _services).ConfigureAwait(false);
+                    Console.WriteLine(result.ErrorReason);
                 }
             }
             catch (Exception e)
