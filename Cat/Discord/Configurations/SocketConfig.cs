@@ -12,8 +12,7 @@ namespace Cat.Discord.Configurations
             {
                 LogLevel = LogSeverity.Info,
                 AlwaysDownloadUsers = false,
-                MessageCacheSize = 0,
-                TotalShards = ConfigData.Data.TotalShards
+                MessageCacheSize = 0
             };
         }
     }
