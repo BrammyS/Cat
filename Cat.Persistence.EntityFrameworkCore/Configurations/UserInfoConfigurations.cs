@@ -8,7 +8,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
     {
         public void Configure(EntityTypeBuilder<UserInfo> builder)
         {
-            builder.ToTable("UserInfo");
+            builder.ToTable("UserInfos");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnType("numeric(20,0)").HasColumnName("Id").IsRequired().ValueGeneratedOnAdd();
