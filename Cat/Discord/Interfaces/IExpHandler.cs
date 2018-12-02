@@ -3,7 +3,7 @@ using Discord.WebSocket;
 
 namespace Cat.Discord.Interfaces
 {
-    public interface IMessageHandler
+    public interface IExpHandler
     {
         Task InitializeAsync(DiscordShardedClient client);
     }

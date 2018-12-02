@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Cat.Discord.Handlers
 {
-    public class MessageHandler : IMessageHandler
+    public class ExpHandler : IExpHandler
     {
         private DiscordShardedClient _client;
         private readonly ILogger _logger;
 
-        public MessageHandler(ILogger logger)
+        public ExpHandler(ILogger logger)
         {
             _logger = logger;
         }
@@ -39,7 +39,7 @@ namespace Cat.Discord.Handlers
             var context = new ShardedCommandContext(_client, message);
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
-                var user = await unitOfWork.UserInfos.GetUserInfoAsync(context.Guild.Id, context.User.Id);
+                var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id);
                 Console.WriteLine(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds);
                 if (!(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds > 4)) return;
                 user.Xp += 2;

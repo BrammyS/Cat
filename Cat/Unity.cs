@@ -43,7 +43,7 @@ namespace Cat
 
             container.RegisterSingleton<IConnection, Connection>();
             container.RegisterSingleton<ICommandHandler, CommandHandler>();
-            container.RegisterSingleton<IMessageHandler, MessageHandler>();
+            container.RegisterSingleton<IExpHandler, ExpHandler>();
             container.RegisterSingleton<ICat, Cat>();
 
             container.RegisterType<CatContext>(new PerResolveLifetimeManager());

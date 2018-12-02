@@ -16,9 +16,9 @@ namespace Cat.Discord
         private readonly IDiscordLogger _discordLogger;
         private readonly ILogger _logger;
         private readonly ICommandHandler _commandHandler;
-        private readonly IMessageHandler _messageHandler;
+        private readonly IExpHandler _messageHandler;
 
-        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler, IMessageHandler messageHandler)
+        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler, IExpHandler messageHandler)
         {
             _client = client;
             _discordLogger = discordLogger;
