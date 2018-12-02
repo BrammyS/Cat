@@ -27,7 +27,7 @@ namespace Cat.Discord.Commands
             {
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
-                    var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id);
+                    var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
                     _embed.WithTitle($"Info for {Context.User.Username}");
                     if (user != null)
                     {

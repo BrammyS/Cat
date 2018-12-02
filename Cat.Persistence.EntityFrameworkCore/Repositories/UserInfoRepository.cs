@@ -17,7 +17,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
 
         public async Task<UserInfo> GetUserInfoAsync(decimal serverId, decimal userId)
         {
-            return await Context.Set<UserInfo>().FirstOrDefaultAsync(x=>x.ServerId == serverId  && x.UserId == userId);
+            return await Context.Set<UserInfo>().FirstOrDefaultAsync(x=>x.ServerId == serverId  && x.UserId == userId).ConfigureAwait(false);
         }
 
         public async Task<UserInfo> GetOrAddUserInfoAsync(decimal serverId, decimal userId)

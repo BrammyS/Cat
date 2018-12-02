@@ -12,6 +12,7 @@ namespace Cat.Persistence.Domain.Tables
         public decimal TimeConnected { get; set; }
         public decimal MessagesSend { get; set; }
         public DateTime LastMessageSend { get; set; }
+        public DateTime LastVoiceStateUpdateReceived { get; set; }
 
         public Server Server { get; set; }
         public User User { get; set; }
