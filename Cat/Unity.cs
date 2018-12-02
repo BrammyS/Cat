@@ -5,6 +5,11 @@ using Cat.Discord.Interfaces;
 using Cat.Discord.Services;
 using Cat.Discord.Services.Implementations;
 using Cat.Interfaces;
+using Cat.Persistence.EntityFrameworkCore.Models;
+using Cat.Persistence.EntityFrameworkCore.Repositories;
+using Cat.Persistence.EntityFrameworkCore.UnitOfWork;
+using Cat.Persistence.Interfaces.Repositories;
+using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Cat.Services.Implementations;
 using Discord.WebSocket;
@@ -38,7 +43,14 @@ namespace Cat
 
             container.RegisterSingleton<IConnection, Connection>();
             container.RegisterSingleton<ICommandHandler, CommandHandler>();
+            container.RegisterSingleton<IMessageHandler, MessageHandler>();
             container.RegisterSingleton<ICat, Cat>();
+
+            container.RegisterType<CatContext>(new PerResolveLifetimeManager());
+            container.RegisterType<IUnitOfWork, UnitOfWork>(new PerResolveLifetimeManager());
+            container.RegisterType<IUserInfoRepository, UserInfoRepository>(new PerResolveLifetimeManager());
+            container.RegisterType<IServerRepository, ServerRepository>(new PerResolveLifetimeManager());
+            container.RegisterType<IUserRepository, UserRepository>(new PerResolveLifetimeManager());
 
             container.RegisterType<IDiscordLogger, DiscordLogger>(new PerThreadLifetimeManager());
         }

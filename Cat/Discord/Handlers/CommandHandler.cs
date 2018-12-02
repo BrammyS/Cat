@@ -3,6 +3,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Cat.Discord.Services;
 using Cat.Discord.Services.Implementations;
+using Cat.Persistence.EntityFrameworkCore.Models;
+using Cat.Persistence.EntityFrameworkCore.Repositories;
+using Cat.Persistence.EntityFrameworkCore.UnitOfWork;
+using Cat.Persistence.Interfaces.Repositories;
+using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Cat.Services.Implementations;
 using Discord;
@@ -16,13 +21,11 @@ namespace Cat.Discord.Handlers
     {
         private DiscordShardedClient _client;
         private IServiceProvider _services;
-        private readonly IDiscordLogger _discordLogger;
         private readonly ILogger _logger;
         private CommandService _commandService;
 
-        public CommandHandler(IDiscordLogger discordLogger, ILogger logger)
+        public CommandHandler(ILogger logger)
         {
-            _discordLogger = discordLogger;
             _logger = logger;
         }
 
@@ -38,6 +41,11 @@ namespace Cat.Discord.Handlers
             _services = new ServiceCollection()
                 .AddSingleton(_client)
                 .AddSingleton(_commandService)
+                .AddDbContext<CatContext>()
+                .AddScoped<IUnitOfWork, UnitOfWork>()
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IUserInfoRepository, UserInfoRepository>()
+                .AddScoped<IServerRepository, ServerRepository>()
                 .AddScoped<IDiscordLogger, DiscordLogger>()
                 .AddScoped<ILogger, Logger>()
                 .BuildServiceProvider();
@@ -45,6 +53,7 @@ namespace Cat.Discord.Handlers
             _commandService.Log += CommandServiceLogAsync;
             _client.MessageReceived += HandleCommandEventAsync;
         }
+
         private async Task HandleCommandEventAsync(SocketMessage message)
         {
             if (!(message is SocketUserMessage msg)) return;

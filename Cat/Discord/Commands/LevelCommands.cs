@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Discord;
 using Discord.Commands;
@@ -21,15 +23,32 @@ namespace Cat.Discord.Commands
         [RequireBotPermission(GuildPermission.SendMessages)]
         public async Task AddColorAsync()
         {
-            _embed.WithTitle($"Info for {Context.User.Username}");
-            _embed.AddField("Level", "420", true);
-            _embed.AddField("Xp", "1530", true);
-            _embed.AddField("Next level", "next level in 230Xp", true);
-            _embed.AddField("Total time connected", "53214", true);
-            _embed.AddField("Join date", $"{Context.Guild.GetUser(Context.User.Id).JoinedAt:MM/dd/yyyy}", true);
-            _embed.AddField("Position", "6", true);
-            await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
-            _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
+            try
+            {
+                using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
+                {
+                    var user = await unitOfWork.UserInfos.GetUserInfoAsync(Context.Guild.Id, Context.User.Id);
+                    _embed.WithTitle($"Info for {Context.User.Username}");
+                    if (user != null)
+                    {
+                        _embed.AddField("Level", $"{user.Level}", true);
+                        _embed.AddField("Xp", $"{user.Xp}", true);
+                        _embed.AddField("Next level", $"next level in 230Xp", true);
+                        _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
+                    }
+
+                    _embed.AddField("Join date", $"{Context.Guild.GetUser(Context.User.Id).JoinedAt:MM/dd/yyyy}", true);
+                    _embed.AddField("Position", $"6", true);
+                    await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
+                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }

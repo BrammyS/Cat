@@ -7,6 +7,7 @@ namespace Cat
     {
         static async Task Main()
         {
+
             Unity.RegisterTypes();
             var bot = Unity.Resolve<ICat>();
             await bot.StartAsync().ConfigureAwait(false);

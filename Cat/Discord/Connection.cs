@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Cat.Configurations;
+using Cat.Discord.Interfaces;
 using Cat.Discord.Services;
 using Cat.Services;
 using Discord;
@@ -15,13 +16,15 @@ namespace Cat.Discord
         private readonly IDiscordLogger _discordLogger;
         private readonly ILogger _logger;
         private readonly ICommandHandler _commandHandler;
+        private readonly IMessageHandler _messageHandler;
 
-        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler)
+        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler, IMessageHandler messageHandler)
         {
             _client = client;
             _discordLogger = discordLogger;
             _logger = logger;
             _commandHandler = commandHandler;
+            _messageHandler = messageHandler;
         }
         
         public async Task ConnectAsync()
@@ -33,6 +36,7 @@ namespace Cat.Discord
             await _client.LoginAsync(TokenType.Bot, ConfigData.Data.Token).ConfigureAwait(false);
             await _client.StartAsync().ConfigureAwait(false);
             await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
+            await _messageHandler.InitializeAsync(_client).ConfigureAwait(false);
 
             await Task.Delay(ConfigData.Data.RestartTime * 60000).ConfigureAwait(false);
             await _client.StopAsync().ConfigureAwait(false);
