@@ -36,10 +36,11 @@ namespace Cat.Discord.Handlers
         private async Task ReactionAddedAsync(SocketReaction reaction)
         {
             if (!(reaction.Channel is SocketGuildChannel guildChannel)) return;
+            if(reaction.User.Value.IsBot) return;
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(guildChannel.Guild.Id, reaction.UserId).ConfigureAwait(false);
-                if(reaction.User.Value != null) await GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
+                await GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
             }
         }
@@ -52,6 +53,7 @@ namespace Cat.Discord.Handlers
         private async Task UserVoiceStateUpdatedAsync(SocketUser socketUser, SocketVoiceState oldState, SocketVoiceState newState)
         {
             if(!(socketUser is SocketGuildUser guildUser)) return;
+            if(guildUser.IsBot) return;
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(guildUser.Guild.Id, guildUser.Id).ConfigureAwait(false);
@@ -67,14 +69,15 @@ namespace Cat.Discord.Handlers
             }
         }
 
-        private async Task MessageReceived(SocketMessage message)
+        private async Task MessageReceived(SocketMessage msg)
         {
-            if (!(message is SocketUserMessage msg)) return;
             await MessageReceivedAsync(msg).ConfigureAwait(false);
         }
 
-        private async Task MessageReceivedAsync(SocketUserMessage message)
+        private async Task MessageReceivedAsync(SocketMessage msg)
         {
+            if (!(msg is SocketUserMessage message)) return;
+            if(message.Author.IsBot) return;
             var context = new ShardedCommandContext(_client, message);
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
