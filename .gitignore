@@ -1,4 +1,10 @@
 Cat/bin/
 Cat/obj/
+Cat.Persistence/bin/
+Cat.Persistence/obj/
+Cat.Persistence.Domain/bin/
+Cat.Persistence.Domain/obj/
+Cat.Persistence.EntityFrameworkCore/bin/
+Cat.Persistence.EntityFrameworkCore/obj/
 packages/
 .vs/
