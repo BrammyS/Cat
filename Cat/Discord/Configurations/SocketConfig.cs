@@ -1,5 +1,4 @@
-﻿using Cat.Configurations;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
 
 namespace Cat.Discord.Configurations

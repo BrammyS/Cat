@@ -36,7 +36,7 @@ namespace Cat.Discord
             await _client.LoginAsync(TokenType.Bot, ConfigData.Data.Token).ConfigureAwait(false);
             await _client.StartAsync().ConfigureAwait(false);
             await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
-            await _messageHandler.InitializeAsync(_client).ConfigureAwait(false);
+            _messageHandler.Initialize(_client);
 
             await Task.Delay(ConfigData.Data.RestartTime * 60000).ConfigureAwait(false);
             await _client.StopAsync().ConfigureAwait(false);

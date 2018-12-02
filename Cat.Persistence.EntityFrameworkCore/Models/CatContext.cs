@@ -6,10 +6,6 @@ namespace Cat.Persistence.EntityFrameworkCore.Models
 {
     public class CatContext : DbContext
     {
-        public CatContext()
-        {
-        }
-
         public virtual DbSet<Server> Servers { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserInfo> UserInfos { get; set; }

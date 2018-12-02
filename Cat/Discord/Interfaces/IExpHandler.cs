@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 
 namespace Cat.Discord.Interfaces
 {
     public interface IExpHandler
     {
-        Task InitializeAsync(DiscordShardedClient client);
+        void Initialize(DiscordShardedClient client);
     }
 }

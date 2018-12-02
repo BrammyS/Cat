@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Cat.Discord.Handlers
 {
@@ -20,13 +18,11 @@ namespace Cat.Discord.Handlers
             _logger = logger;
         }
 
-        public Task InitializeAsync(DiscordShardedClient client)
+        public void Initialize(DiscordShardedClient client)
         {
             _client = client;
-
             _client.MessageReceived += MessageReceived;
             _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
-            return Task.CompletedTask;
         }
 
         private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState state1, SocketVoiceState state2)
