@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.EntityFrameworkCore.Models;
 using Cat.Persistence.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Cat.Persistence.EntityFrameworkCore.Repositories
 {
@@ -40,7 +40,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
 
         public async Task<int> FindPosition(decimal serverId, decimal userId)
         {
-            var users = await Context.Set<UserInfo>().ToListAsync().ConfigureAwait(false);
+            var users = await Context.Set<UserInfo>().OrderBy(x=>x.Level).ThenBy(x=>x.Xp).ToListAsync().ConfigureAwait(false);
             return users.FindIndex(x => x.ServerId == serverId && x.UserId == userId);
         }
     }
