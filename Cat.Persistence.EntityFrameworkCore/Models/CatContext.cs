@@ -14,8 +14,6 @@ namespace Cat.Persistence.EntityFrameworkCore.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserInfo> UserInfos { get; set; }
 
-        // Unable to generate entity type for table 'dbo.Users'. Please see the warning messages.
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder.IsConfigured) return;
