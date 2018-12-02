@@ -43,7 +43,9 @@ namespace Cat.Discord.Handlers
                 if (oldState.VoiceChannel == null) user.LastVoiceStateUpdateReceived = DateTime.Now;
                 if (newState.VoiceChannel == null)
                 {
-                    user.TimeConnected += (decimal) DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMilliseconds;
+                    var timeDiff = (decimal) DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMilliseconds;
+                    user.TimeConnected += timeDiff;
+                    user.Xp += timeDiff / 5;
                 }
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
