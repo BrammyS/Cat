@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
+using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Discord.Commands;
@@ -41,7 +42,7 @@ namespace Cat.Discord.Handlers
                 {
                     var timeDiff = (decimal) DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMilliseconds;
                     user.TimeConnected += timeDiff;
-                    user.Xp += timeDiff / 5;
+                    await GiveXp(timeDiff / 5, user, guildUser.Guild, socketUser, unitOfWork).ConfigureAwait(false);
                 }
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
@@ -60,12 +61,27 @@ namespace Cat.Discord.Handlers
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id).ConfigureAwait(false);
-                Console.WriteLine(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds);
                 if (!(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds > 4)) return;
-                user.Xp += 2;
+                await GiveXp(2, user, context.Guild, context.User, unitOfWork).ConfigureAwait(false);
                 user.LastMessageSend = DateTime.Now;
-                Console.WriteLine(user.Xp);
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task GiveXp(decimal xp, UserInfo user, SocketGuild guild, SocketUser socketUser , IUnitOfWork unitOfWork)
+        {
+            user.Xp += xp;
+            var xpNeeded = user.Xp > user.Level * (user.Level + 25);
+            if (xpNeeded)
+            {
+                var server = await unitOfWork.Servers.GetOrAddServerAsync(guild.Id, guild.Name, guild.MemberCount).ConfigureAwait(false);
+                while (xpNeeded)
+                {
+                    user.Level++;
+                    xpNeeded = user.Xp > user.Level * (user.Level + 25);
+                }
+                if (server.LevelUpChannel != null)await guild.GetTextChannel((ulong)server.LevelUpChannel).SendMessageAsync($"{socketUser.Mention} just leveled up to lvl: {user.Level} :tada:\n" +
+                                                                                                                            "User `?level` for more info.").ConfigureAwait(false);
             }
         }
     }
