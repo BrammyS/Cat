@@ -4,6 +4,7 @@ using Cat.Discord.Interfaces;
 using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
@@ -22,8 +23,25 @@ namespace Cat.Discord.Handlers
         public void Initialize(DiscordShardedClient client)
         {
             _client = client;
+            _client.ReactionAdded += ReactionAdded;
             _client.MessageReceived += MessageReceived;
             _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
+        }
+
+        private async Task ReactionAdded(Cacheable<IUserMessage, ulong> cacheAbleMessage, ISocketMessageChannel channel, SocketReaction reaction)
+        {
+            await ReactionAddedAsync(reaction).ConfigureAwait(false);
+        }
+
+        private async Task ReactionAddedAsync(SocketReaction reaction)
+        {
+            if (!(reaction.Channel is SocketGuildChannel guildChannel)) return;
+            using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
+            {
+                var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(guildChannel.Guild.Id, reaction.UserId).ConfigureAwait(false);
+                if(reaction.User.Value != null) await GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
+                await unitOfWork.SaveAsync().ConfigureAwait(false);
+            }
         }
 
         private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState state1, SocketVoiceState state2)
@@ -68,7 +86,7 @@ namespace Cat.Discord.Handlers
             }
         }
 
-        private async Task GiveXp(decimal xp, UserInfo user, SocketGuild guild, SocketUser socketUser , IUnitOfWork unitOfWork)
+        private async Task GiveXp(decimal xp, UserInfo user, SocketGuild guild, IMentionable socketUser , IUnitOfWork unitOfWork)
         {
             user.Xp += xp;
             var xpNeeded = user.Xp > user.Level * (user.Level + 25);
