@@ -7,5 +7,6 @@ namespace Cat.Persistence.Interfaces.Repositories
     {
         Task<UserInfo> GetUserInfoAsync(decimal serverId, decimal userId);
         Task<UserInfo> GetOrAddUserInfoAsync(decimal serverId, decimal userId);
+        Task<int> FindPosition(decimal serverId, decimal userId);
     }
 }
