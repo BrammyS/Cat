@@ -16,6 +16,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
             builder.Property(x => x.JoinDate).HasColumnType("date").HasColumnName("JoinDate").IsRequired();
             builder.Property(x => x.Active).HasColumnType("bit").HasColumnName("Active").IsRequired();
             builder.Property(x => x.TotalMembers).HasColumnType("numeric(20,0)").HasColumnName("TotalMembers").IsRequired();
+            builder.Property(x => x.LevelUpChannel).HasColumnType("numeric(20,0)").HasColumnName("LevelUpChannel").IsRequired(false);
             builder.Property(x => x.Prefix).HasColumnType("nvarchar(MAX)").HasColumnName("Prefix").IsRequired(false);
 
             builder.HasMany(x => x.UserInfos).WithOne(x => x.Server)

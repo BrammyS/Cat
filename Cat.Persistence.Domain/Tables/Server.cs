@@ -9,6 +9,7 @@ namespace Cat.Persistence.Domain.Tables
         public string Name { get; set; }
         public string Prefix { get; set; }
         public decimal TotalMembers { get; set; }
+        public decimal LevelUpChannel { get; set; }
         public DateTime JoinDate { get; set; }
         public bool Active { get; set; }
 
