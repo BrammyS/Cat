@@ -21,7 +21,7 @@ namespace Cat.Discord.Commands
         [Command("level", RunMode = RunMode.Async)]
         [RequireBotPermission(GuildPermission.EmbedLinks)]
         [RequireBotPermission(GuildPermission.SendMessages)]
-        public async Task AddColorAsync()
+        public async Task LevelAsync()
         {
             try
             {
@@ -49,7 +49,31 @@ namespace Cat.Discord.Commands
                 Console.WriteLine(e);
                 throw;
             }
+        }
 
+        [Command("TopUsers", RunMode = RunMode.Async)]
+        [RequireBotPermission(GuildPermission.EmbedLinks)]
+        [RequireBotPermission(GuildPermission.SendMessages)]
+        public async Task TopUsersAsync()
+        {
+            try
+            {
+                using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
+                {
+                    var topUsers = await unitOfWork.UserInfos.GetTopUsers(Context.Guild.Id).ConfigureAwait(false);
+                    for (var i = 0; i < topUsers.Count; i++)
+                    {
+                        _embed.AddField($"{i + 1}. {topUsers[i].UserId}", $"Lvl: {topUsers[i].Level}", true);
+                    }
+                    await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
+                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

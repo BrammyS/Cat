@@ -34,12 +34,12 @@ namespace Cat.Discord
             _client.Log += _discordLogger.Log;
             _client.ShardLatencyUpdated += ShardLatencyUpdatedAsync;
             _client.ShardDisconnected += ShardDisconnectedAsync;
-            _client.ShardConnected += _client_ShardConnected;
+            //_client.ShardConnected += _client_ShardConnected;
 
             await _client.LoginAsync(TokenType.Bot, ConfigData.Data.Token).ConfigureAwait(false);
             await _client.StartAsync().ConfigureAwait(false);
-            //await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
-            //_messageHandler.Initialize(_client);
+            await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
+            _messageHandler.Initialize(_client);
 
             await Task.Delay(ConfigData.Data.RestartTime * 60000).ConfigureAwait(false);
             await _client.StopAsync().ConfigureAwait(false);
