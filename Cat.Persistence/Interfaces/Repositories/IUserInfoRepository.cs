@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cat.Persistence.Domain.Tables;
 
 namespace Cat.Persistence.Interfaces.Repositories
@@ -6,6 +7,7 @@ namespace Cat.Persistence.Interfaces.Repositories
     public interface IUserInfoRepository : IRepository<UserInfo>
     {
         Task<UserInfo> GetUserInfoAsync(decimal serverId, decimal userId);
+        Task<List<UserInfo>> GetTopUsers(decimal serverId);
         Task<UserInfo> GetOrAddUserInfoAsync(decimal serverId, decimal userId);
         Task<int> FindPosition(decimal serverId, decimal userId);
     }

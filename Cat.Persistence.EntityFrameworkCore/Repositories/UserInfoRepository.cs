@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cat.Persistence.Domain.Tables;
@@ -38,9 +39,14 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
             return userInfo.Entity;
         }
 
+        public async Task<List<UserInfo>> GetTopUsers(decimal serverId)
+        {
+            return await Context.Set<UserInfo>().Where(x => x.ServerId == serverId).OrderByDescending(x => x.Level).ThenByDescending(x => x.Xp).Take(10).ToListAsync().ConfigureAwait(false);
+        }
+
         public async Task<int> FindPosition(decimal serverId, decimal userId)
         {
-            var users = await Context.Set<UserInfo>().OrderBy(x=>x.Level).ThenBy(x=>x.Xp).ToListAsync().ConfigureAwait(false);
+            var users = await Context.Set<UserInfo>().Where(x=>x.ServerId == serverId).OrderBy(x=>x.Level).ThenBy(x=>x.Xp).ToListAsync().ConfigureAwait(false);
             return users.FindIndex(x => x.ServerId == serverId && x.UserId == userId);
         }
     }
