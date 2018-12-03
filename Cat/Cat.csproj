@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cat.Persistence.EntityFrameworkCore\Cat.Persistence.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Cat.Persistence.JsonStorage\Cat.Persistence.JsonStorage.csproj" />
   </ItemGroup>
 
 </Project>

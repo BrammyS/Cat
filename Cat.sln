@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat", "Cat\Cat.csproj", "{519B5902-90EA-4256-B45F-10B0DC7606D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Persistence", "Cat.Persistence\Cat.Persistence.csproj", "{C74ABA3C-9607-489B-A255-2639E9919084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence", "Cat.Persistence\Cat.Persistence.csproj", "{C74ABA3C-9607-489B-A255-2639E9919084}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Persistence.Domain", "Cat.Persistence.Domain\Cat.Persistence.Domain.csproj", "{67855A67-2A44-4588-9559-98519A674ED5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence.Domain", "Cat.Persistence.Domain\Cat.Persistence.Domain.csproj", "{67855A67-2A44-4588-9559-98519A674ED5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Persistence.EntityFrameworkCore", "Cat.Persistence.EntityFrameworkCore\Cat.Persistence.EntityFrameworkCore.csproj", "{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence.EntityFrameworkCore", "Cat.Persistence.EntityFrameworkCore\Cat.Persistence.EntityFrameworkCore.csproj", "{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Persistence.JsonStorage", "Cat.Persistence.JsonStorage\Cat.Persistence.JsonStorage.csproj", "{4E263337-3B15-47E1-8731-1EB694478475}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E263337-3B15-47E1-8731-1EB694478475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E263337-3B15-47E1-8731-1EB694478475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E263337-3B15-47E1-8731-1EB694478475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E263337-3B15-47E1-8731-1EB694478475}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

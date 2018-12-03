@@ -6,5 +6,7 @@ Cat.Persistence.Domain/bin/
 Cat.Persistence.Domain/obj/
 Cat.Persistence.EntityFrameworkCore/bin/
 Cat.Persistence.EntityFrameworkCore/obj/
+Cat.Persistence.JsonStorage/bin/
+Cat.Persistence.JsonStorage/obj/
 packages/
 .vs/

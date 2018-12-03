@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
 using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.Interfaces.UnitOfWork;
-using Cat.Services;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -13,12 +12,6 @@ namespace Cat.Discord.Handlers
     public class ExpHandler : IExpHandler
     {
         private DiscordShardedClient _client;
-        private readonly ILogger _logger;
-
-        public ExpHandler(ILogger logger)
-        {
-            _logger = logger;
-        }
 
         public void Initialize(DiscordShardedClient client)
         {
