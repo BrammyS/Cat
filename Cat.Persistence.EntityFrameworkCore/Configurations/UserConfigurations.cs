@@ -14,7 +14,6 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
             builder.Property(x => x.Id).HasColumnType("numeric(20,0)").HasColumnName("Id").IsRequired().ValueGeneratedOnAdd();
             builder.Property(x => x.Name).HasColumnType("nvarchar(MAX)").HasColumnName("Name").IsRequired();
             builder.Property(x => x.SpamWarning).HasColumnType("numeric(20,0)").HasColumnName("SpamWarning").IsRequired();
-            builder.Property(x => x.TotalTimesTimedOut).HasColumnType("numeric(20,0)").HasColumnName("TimesTimedOut").IsRequired();
             builder.Property(x => x.CommandUsed).HasColumnType("datetime").HasColumnName("CommandUsed").IsRequired();
             builder.Property(x => x.ServerId).HasColumnType("numeric(20,0)").HasColumnName("ServerId").IsRequired();
             builder.Property(x => x.UserId).HasColumnType("numeric(20,0)").HasColumnName("UserId").IsRequired();

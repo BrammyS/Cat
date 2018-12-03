@@ -40,8 +40,7 @@ namespace Cat.Persistence.JsonStorage
                         Xp = oldUserAccount.Xp,
                         CommandUsed = DateTime.Now.AddDays(-1),
                         Name = oldUserAccount.Username,
-                        SpamWarning = 0,
-                        TotalTimesTimedOut = 0
+                        SpamWarning = 0
                     });
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine($"Adding: {oldUserAccount.Username}");

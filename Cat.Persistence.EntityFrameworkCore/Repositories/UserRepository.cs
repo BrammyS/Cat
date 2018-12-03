@@ -36,16 +36,19 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
                 CommandUsed = DateTime.Now.AddSeconds(-10),
                 LastVoiceStateUpdateReceived = DateTime.Now.AddSeconds(-10),
                 SpamWarning = 0,
-                TotalTimesTimedOut = 0,
                 Name = userName
             }).ConfigureAwait(false);
             await Context.SaveChangesAsync().ConfigureAwait(false);
             return userInfo.Entity;
         }
 
-        public async Task<List<User>> GetTopUsers(decimal serverId)
+        public async Task<List<User>> GetTopLevelUsersAsync(decimal serverId)
         {
             return await Context.Set<User>().Where(x => x.ServerId == serverId).OrderByDescending(x => x.Level).ThenByDescending(x => x.Xp).Take(9).ToListAsync().ConfigureAwait(false);
+        }
+        public async Task<List<User>> GetTopTimeConnectedUsersAsync(decimal serverId)
+        {
+            return await Context.Set<User>().Where(x => x.ServerId == serverId).OrderByDescending(x => x.TimeConnected).Take(9).ToListAsync().ConfigureAwait(false);
         }
 
         public async Task<int> FindPosition(decimal serverId, decimal userId)

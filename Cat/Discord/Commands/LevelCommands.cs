@@ -60,10 +60,16 @@ namespace Cat.Discord.Commands
             {
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
-                    var topUsers = await unitOfWork.Users.GetTopUsers(Context.Guild.Id).ConfigureAwait(false);
+                    var topUsers = await unitOfWork.Users.GetTopLevelUsersAsync(Context.Guild.Id).ConfigureAwait(false);
+                    _embed.AddField("Top levels", "These are the top 9 people with the highest level");
                     for (var i = 0; i < topUsers.Count; i++)
                     {
                         _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"Lvl: {topUsers[i].Level}", true);
+                    }
+                    _embed.AddField("Top time connected", "These are the top 9 people with the highest total time connect to a voice channel");
+                    for (var i = 0; i < topUsers.Count; i++)
+                    {
+                        _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"{topUsers[i].TimeConnected} minutes", true);
                     }
                     await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
                     _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");

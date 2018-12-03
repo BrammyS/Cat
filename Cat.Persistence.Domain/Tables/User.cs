@@ -6,7 +6,6 @@ namespace Cat.Persistence.Domain.Tables
     {
         public decimal Id { get; set; }
         public string Name { get; set; }
-        public decimal TotalTimesTimedOut { get; set; }
         public DateTime CommandUsed { get; set; }
         public decimal SpamWarning { get; set; }
         public decimal ServerId { get; set; }
