@@ -19,7 +19,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
             builder.Property(x => x.LevelUpChannel).HasColumnType("numeric(20,0)").HasColumnName("LevelUpChannel").IsRequired(false);
             builder.Property(x => x.Prefix).HasColumnType("nvarchar(MAX)").HasColumnName("Prefix").IsRequired(false);
 
-            builder.HasMany(x => x.UserInfos).WithOne(x => x.Server)
+            builder.HasMany(x => x.Users).WithOne(x => x.Server)
                 .HasPrincipalKey(x => x.Id).HasForeignKey(x => x.ServerId)
                 .OnDelete(DeleteBehavior.ClientSetNull).IsRequired();
         }

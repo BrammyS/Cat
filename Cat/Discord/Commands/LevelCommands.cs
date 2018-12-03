@@ -27,8 +27,8 @@ namespace Cat.Discord.Commands
             {
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
-                    var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
-                    var position = await unitOfWork.UserInfos.FindPosition(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
+                    var user = await unitOfWork.Users.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id, Context.User.Username).ConfigureAwait(false);
+                    var position = await unitOfWork.Users.FindPosition(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
                     _embed.WithTitle($"Info for {Context.User.Username}");
                     if (user != null)
                     {
@@ -60,7 +60,7 @@ namespace Cat.Discord.Commands
             {
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
-                    var topUsers = await unitOfWork.UserInfos.GetTopUsers(Context.Guild.Id).ConfigureAwait(false);
+                    var topUsers = await unitOfWork.Users.GetTopUsers(Context.Guild.Id).ConfigureAwait(false);
                     for (var i = 0; i < topUsers.Count; i++)
                     {
                         _embed.AddField($"{i + 1}. {topUsers[i].UserId}", $"Lvl: {topUsers[i].Level}", true);

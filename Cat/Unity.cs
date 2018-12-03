@@ -48,7 +48,6 @@ namespace Cat
 
             container.RegisterType<CatContext>(new PerResolveLifetimeManager());
             container.RegisterType<IUnitOfWork, UnitOfWork>(new PerResolveLifetimeManager());
-            container.RegisterType<IUserInfoRepository, UserInfoRepository>(new PerResolveLifetimeManager());
             container.RegisterType<IServerRepository, ServerRepository>(new PerResolveLifetimeManager());
             container.RegisterType<IUserRepository, UserRepository>(new PerResolveLifetimeManager());
 

@@ -15,8 +15,7 @@ namespace Cat.Persistence.JsonStorage
         {
             try
             {
-                var newUserAccounts = new List<User>();
-                var userInfos = new List<UserInfo>();
+                var users = new List<User>();
                 var guild = client.GetGuild(403577303784882186);
                 Console.WriteLine($"guild: {guild.Name}");
                 var oldUserAccounts = new List<UserAccount>();
@@ -29,15 +28,7 @@ namespace Cat.Persistence.JsonStorage
                 {
                     if (oldUserAccount == null) continue;
                     Console.WriteLine($"Adding: {oldUserAccount.Username}");
-                    newUserAccounts.Add(new User
-                    {
-                        Id = oldUserAccount.Id,
-                        CommandUsed = DateTime.Now.AddDays(-1),
-                        Name = oldUserAccount.Username,
-                        SpamWarning = 0,
-                        TotalTimesTimedOut = 0
-                    });
-                    userInfos.Add(new UserInfo
+                    users.Add(new User
                     {
                         UserId = oldUserAccount.Id,
                         ServerId = guild.Id,
@@ -46,16 +37,19 @@ namespace Cat.Persistence.JsonStorage
                         Level = oldUserAccount.Level,
                         MessagesSend = 0,
                         TimeConnected = oldUserAccount.TotalTimeConnected,
-                        Xp = oldUserAccount.Xp
+                        Xp = oldUserAccount.Xp,
+                        CommandUsed = DateTime.Now.AddDays(-1),
+                        Name = oldUserAccount.Username,
+                        SpamWarning = 0,
+                        TotalTimesTimedOut = 0
                     });
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine($"Adding: {oldUserAccount.Username}");
                     Console.ResetColor();
                 }
 
-                Console.WriteLine($"Saving {newUserAccounts.Count} newUserAccounts and {userInfos.Count} userInfos");
-                await unitOfWork.Users.AddRangeAsync(newUserAccounts).ConfigureAwait(false);
-                await unitOfWork.UserInfos.AddRangeAsync(userInfos).ConfigureAwait(false);
+                Console.WriteLine($"Saving {users.Count} newUserAccounts");
+                await unitOfWork.Users.AddRangeAsync(users).ConfigureAwait(false);
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
                 Console.WriteLine("Data saved!");

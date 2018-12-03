@@ -9,16 +9,14 @@ namespace Cat.Persistence.EntityFrameworkCore.UnitOfWork
     {
         private readonly CatContext _context;
 
-        public UnitOfWork(CatContext context, IServerRepository serverRepository, IUserRepository userRepository, IUserInfoRepository userInfoRepository)
+        public UnitOfWork(CatContext context, IServerRepository serverRepository, IUserRepository userRepository)
         {
             _context = context;
             Servers = serverRepository;
             Users = userRepository;
-            UserInfos = userInfoRepository;
         }
 
         public IServerRepository Servers { get; }
-        public IUserInfoRepository UserInfos { get; }
         public IUserRepository Users { get; }
 
         public int Save()

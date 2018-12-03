@@ -44,7 +44,6 @@ namespace Cat.Discord.Handlers
                 .AddDbContext<CatContext>()
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<IUserInfoRepository, UserInfoRepository>()
                 .AddScoped<IServerRepository, ServerRepository>()
                 .AddScoped<IDiscordLogger, DiscordLogger>()
                 .AddScoped<ILogger, Logger>()

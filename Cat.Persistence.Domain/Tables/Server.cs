@@ -13,6 +13,6 @@ namespace Cat.Persistence.Domain.Tables
         public DateTime JoinDate { get; set; }
         public bool Active { get; set; }
 
-        public List<UserInfo> UserInfos { get; set; }
+        public List<User> Users { get; set; }
     }
 }

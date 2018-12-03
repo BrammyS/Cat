@@ -32,7 +32,7 @@ namespace Cat.Discord.Handlers
             if(reaction.User.Value.IsBot) return;
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
-                var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(guildChannel.Guild.Id, reaction.UserId).ConfigureAwait(false);
+                var user = await unitOfWork.Users.GetOrAddUserInfoAsync(guildChannel.Guild.Id, reaction.UserId, reaction.User.Value.Username).ConfigureAwait(false);
                 await GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
             }
@@ -49,7 +49,7 @@ namespace Cat.Discord.Handlers
             if(guildUser.IsBot) return;
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
-                var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(guildUser.Guild.Id, guildUser.Id).ConfigureAwait(false);
+                var user = await unitOfWork.Users.GetOrAddUserInfoAsync(guildUser.Guild.Id, guildUser.Id, guildUser.Username).ConfigureAwait(false);
                 if (oldState.VoiceChannel == null) user.LastVoiceStateUpdateReceived = DateTime.Now;
                 if (newState.VoiceChannel == null)
                 {
@@ -74,7 +74,7 @@ namespace Cat.Discord.Handlers
             var context = new ShardedCommandContext(_client, message);
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
-                var user = await unitOfWork.UserInfos.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id).ConfigureAwait(false);
+                var user = await unitOfWork.Users.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id, context.User.Username).ConfigureAwait(false);
                 if (!(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds > 4)) return;
                 await GiveXp(2, user, context.Guild, context.User, unitOfWork).ConfigureAwait(false);
                 user.LastMessageSend = DateTime.Now;
@@ -82,7 +82,7 @@ namespace Cat.Discord.Handlers
             }
         }
 
-        private async Task GiveXp(decimal xp, UserInfo user, SocketGuild guild, IMentionable socketUser , IUnitOfWork unitOfWork)
+        private async Task GiveXp(decimal xp, User user, SocketGuild guild, IMentionable socketUser , IUnitOfWork unitOfWork)
         {
             user.Xp += xp;
             var xpNeeded = user.Xp > user.Level * (user.Level + 25);
