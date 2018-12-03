@@ -45,7 +45,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
 
         public async Task<List<User>> GetTopUsers(decimal serverId)
         {
-            return await Context.Set<User>().Where(x => x.ServerId == serverId).OrderByDescending(x => x.Level).ThenByDescending(x => x.Xp).Take(10).ToListAsync().ConfigureAwait(false);
+            return await Context.Set<User>().Where(x => x.ServerId == serverId).OrderByDescending(x => x.Level).ThenByDescending(x => x.Xp).Take(9).ToListAsync().ConfigureAwait(false);
         }
 
         public async Task<int> FindPosition(decimal serverId, decimal userId)
