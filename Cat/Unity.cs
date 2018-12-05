@@ -43,6 +43,7 @@ namespace Cat
 
             container.RegisterSingleton<IConnection, Connection>();
             container.RegisterSingleton<ICommandHandler, CommandHandler>();
+            container.RegisterSingleton<IExpService, ExpService>();
             container.RegisterSingleton<IExpHandler, ExpHandler>();
             container.RegisterSingleton<ICat, Cat>();
 

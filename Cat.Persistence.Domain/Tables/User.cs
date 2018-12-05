@@ -13,6 +13,7 @@ namespace Cat.Persistence.Domain.Tables
         public decimal Xp { get; set; }
         public decimal Level { get; set; }
         public decimal TimeConnected { get; set; }
+        public decimal TimesTimedOut { get; set; }
         public decimal MessagesSend { get; set; }
         public DateTime LastMessageSend { get; set; }
         public DateTime LastVoiceStateUpdateReceived { get; set; }

@@ -34,7 +34,7 @@ namespace Cat.Discord.Commands
                     {
                         _embed.AddField("Level", $"{user.Level}", true);
                         _embed.AddField("Xp", $"{user.Xp}", true);
-                        _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25)}Xp", true);
+                        _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25) - user.Xp}Xp", true);
                         _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
                     }
 
@@ -67,6 +67,7 @@ namespace Cat.Discord.Commands
                         _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"Lvl: {topUsers[i].Level}", true);
                     }
                     _embed.AddField("Top time connected", "These are the top 9 people with the highest total time connect to a voice channel");
+                    topUsers = await unitOfWork.Users.GetTopTimeConnectedUsersAsync(Context.Guild.Id).ConfigureAwait(false);
                     for (var i = 0; i < topUsers.Count; i++)
                     {
                         _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"{topUsers[i].TimeConnected} minutes", true);

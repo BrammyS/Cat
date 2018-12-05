@@ -24,7 +24,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
         {
             var exists = await Context.Set<User>().AnyAsync(x => x.ServerId == serverId && x.UserId == userId).ConfigureAwait(false);
             if (exists) return await GetUserAsync(serverId, userId).ConfigureAwait(false);
-            var userInfo = await Context.Set<User>().AddAsync(new User
+            var user = await Context.Set<User>().AddAsync(new User
             {
                 UserId = userId,
                 LastMessageSend = DateTime.Now,
@@ -36,10 +36,11 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
                 CommandUsed = DateTime.Now.AddSeconds(-10),
                 LastVoiceStateUpdateReceived = DateTime.Now.AddSeconds(-10),
                 SpamWarning = 0,
-                Name = userName
+                Name = userName,
+                TimesTimedOut = 0
             }).ConfigureAwait(false);
             await Context.SaveChangesAsync().ConfigureAwait(false);
-            return userInfo.Entity;
+            return user.Entity;
         }
 
         public async Task<List<User>> GetTopLevelUsersAsync(decimal serverId)

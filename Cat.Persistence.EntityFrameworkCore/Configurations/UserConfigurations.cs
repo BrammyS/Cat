@@ -19,6 +19,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
             builder.Property(x => x.UserId).HasColumnType("numeric(20,0)").HasColumnName("UserId").IsRequired();
             builder.Property(x => x.Xp).HasColumnType("numeric(20,0)").HasColumnName("Xp").IsRequired();
             builder.Property(x => x.TimeConnected).HasColumnType("numeric(20,0)").HasColumnName("TimeConnected").IsRequired();
+            builder.Property(x => x.TimesTimedOut).HasColumnType("numeric(20,0)").HasColumnName("TimesTimedOut").IsRequired();
             builder.Property(x => x.Level).HasColumnType("numeric(20,0)").HasColumnName("Level").IsRequired();
             builder.Property(x => x.MessagesSend).HasColumnType("numeric(20,0)").HasColumnName("MessagesSend").IsRequired();
             builder.Property(x => x.LastMessageSend).HasColumnType("datetime").HasColumnName("LastMessageSend").IsRequired();

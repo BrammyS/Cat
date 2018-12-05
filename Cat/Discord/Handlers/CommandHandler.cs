@@ -22,11 +22,13 @@ namespace Cat.Discord.Handlers
         private DiscordShardedClient _client;
         private IServiceProvider _services;
         private readonly ILogger _logger;
+        private readonly IExpService _expService;
         private CommandService _commandService;
 
-        public CommandHandler(ILogger logger)
+        public CommandHandler(ILogger logger, IExpService expService)
         {
             _logger = logger;
+            _expService = expService;
         }
 
         public async Task InitializeAsync(DiscordShardedClient client)
@@ -69,10 +71,19 @@ namespace Cat.Discord.Handlers
                 if (context.Message.HasStringPrefix("?", ref argPos) || 
                     context.Message.HasMentionPrefix(_client.CurrentUser, ref argPos))
                 {
-                    var searchResult = _commandService.Search(context, argPos);
-                    if (searchResult.Commands == null || searchResult.Commands.Count == 0) return;
-                    var result = await _commandService.ExecuteAsync(context, argPos, _services).ConfigureAwait(false);
-                    Console.WriteLine(result.ErrorReason);
+                    using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
+                    {
+                        var searchResult = _commandService.Search(context, argPos);
+                        if (searchResult.Commands == null || searchResult.Commands.Count == 0) return;
+                        var result = await _commandService.ExecuteAsync(context, argPos, _services).ConfigureAwait(false);
+                        var user = await unitOfWork.Users.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id, context.User.Username).ConfigureAwait(false);
+                        if (!(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds > 4)) return;
+                        await _expService.GiveXp(3, user, context.Guild, context.User, unitOfWork).ConfigureAwait(false);
+                        user.LastMessageSend = DateTime.Now;
+                        user.MessagesSend++;
+                        await unitOfWork.SaveAsync().ConfigureAwait(false);
+                        Console.WriteLine(result.ErrorReason);
+                    }
                 }
             }
             catch (Exception e)

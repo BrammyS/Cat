@@ -16,18 +16,18 @@ namespace Cat.Persistence.JsonStorage
             try
             {
                 var users = new List<User>();
-                var guild = client.GetGuild(403577303784882186);
+                var guild = client.GetGuild(224949218639478784);
                 Console.WriteLine($"guild: {guild.Name}");
                 var oldUserAccounts = new List<UserAccount>();
                 oldUserAccounts.AddRange(guild.Users.Select(user =>
                 {
-                    Console.WriteLine($"Loading: {user.Username}");
+                    Console.WriteLine($"Loading: {user.Id}");
                     return UserAccounts.UserAccounts.GetAccount(user, guild);
                 }));
                 foreach (var oldUserAccount in oldUserAccounts)
                 {
-                    if (oldUserAccount == null) continue;
-                    Console.WriteLine($"Adding: {oldUserAccount.Username}");
+                    if (oldUserAccount?.Username == null) continue;
+                    Console.WriteLine($"Adding: {oldUserAccount.Id}");
                     users.Add(new User
                     {
                         UserId = oldUserAccount.Id,

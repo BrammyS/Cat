@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
+using Cat.Discord.Services;
 using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Discord;
@@ -11,7 +12,13 @@ namespace Cat.Discord.Handlers
 {
     public class ExpHandler : IExpHandler
     {
+        private readonly IExpService _expService;
         private DiscordShardedClient _client;
+
+        public ExpHandler(IExpService expService)
+        {
+            _expService = expService;
+        }
 
         public void Initialize(DiscordShardedClient client)
         {
@@ -33,7 +40,7 @@ namespace Cat.Discord.Handlers
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.Users.GetOrAddUserInfoAsync(guildChannel.Guild.Id, reaction.UserId, reaction.User.Value.Username).ConfigureAwait(false);
-                await GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
+                await _expService.GiveXp(1, user, guildChannel.Guild, reaction.User.Value, unitOfWork).ConfigureAwait(false);
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
             }
         }
@@ -55,7 +62,7 @@ namespace Cat.Discord.Handlers
                 {
                     var timeDiff = (decimal) DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMilliseconds;
                     user.TimeConnected += timeDiff;
-                    await GiveXp(timeDiff / 5, user, guildUser.Guild, socketUser, unitOfWork).ConfigureAwait(false);
+                    await _expService.GiveXp(timeDiff / 2, user, guildUser.Guild, socketUser, unitOfWork).ConfigureAwait(false);
                 }
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
@@ -71,31 +78,17 @@ namespace Cat.Discord.Handlers
         {
             if (!(msg is SocketUserMessage message)) return;
             if(message.Author.IsBot) return;
+            var argPos = 0;
+            if(message.HasStringPrefix("?", ref argPos)) return;
             var context = new ShardedCommandContext(_client, message);
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.Users.GetOrAddUserInfoAsync(context.Guild.Id, context.User.Id, context.User.Username).ConfigureAwait(false);
                 if (!(DateTime.Now.Subtract(user.LastMessageSend).TotalSeconds > 4)) return;
-                await GiveXp(2, user, context.Guild, context.User, unitOfWork).ConfigureAwait(false);
+                await _expService.GiveXp(2, user, context.Guild, context.User, unitOfWork).ConfigureAwait(false);
                 user.LastMessageSend = DateTime.Now;
+                user.MessagesSend++;
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
-            }
-        }
-
-        private async Task GiveXp(decimal xp, User user, SocketGuild guild, IMentionable socketUser , IUnitOfWork unitOfWork)
-        {
-            user.Xp += xp;
-            var xpNeeded = user.Xp > user.Level * (user.Level + 25);
-            if (xpNeeded)
-            {
-                var server = await unitOfWork.Servers.GetOrAddServerAsync(guild.Id, guild.Name, guild.MemberCount).ConfigureAwait(false);
-                while (xpNeeded)
-                {
-                    user.Level++;
-                    xpNeeded = user.Xp > user.Level * (user.Level + 25);
-                }
-                if (server.LevelUpChannel != null)await guild.GetTextChannel((ulong)server.LevelUpChannel).SendMessageAsync($"{socketUser.Mention} just leveled up to lvl: {user.Level} :tada:\n" +
-                                                                                                                            "User `?level` for more info.").ConfigureAwait(false);
             }
         }
     }
