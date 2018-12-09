@@ -11,15 +11,15 @@ namespace Cat.Discord.Services.Implementations
         public async Task GiveXp(decimal xp, User user, SocketGuild guild, IMentionable socketUser, IUnitOfWork unitOfWork)
         {
             user.Xp += xp;
-            var xpNeeded = user.Xp >= user.Level * (user.Level + 25);
+            var xpNeeded = user.Xp >= user.Level * 25;
             if (xpNeeded)
             {
                 var server = await unitOfWork.Servers.GetOrAddServerAsync(guild.Id, guild.Name, guild.MemberCount).ConfigureAwait(false);
                 while (xpNeeded)
                 {
-                    user.Xp -= user.Level * (user.Level + 25);
+                    user.Xp -= user.Level * 25;
                     user.Level++;
-                    xpNeeded = user.Xp >= user.Level * (user.Level + 25);
+                    xpNeeded = user.Xp >= user.Level * 25;
                 }
 
                 if (server.LevelUpChannel != null) await guild.GetTextChannel((ulong) server.LevelUpChannel).SendMessageAsync($"{socketUser.Mention} just leveled up to lvl: {user.Level} :tada:\n" +

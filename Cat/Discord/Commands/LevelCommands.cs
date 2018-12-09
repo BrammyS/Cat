@@ -39,12 +39,12 @@ namespace Cat.Discord.Commands
                     _embed.WithTitle($"Info for {Context.User.Username}");
                     _embed.AddField("Level", $"{user.Level}", true);
                     _embed.AddField("Xp", $"{user.Xp}", true);
-                    _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25) - user.Xp}Xp", true);
+                    _embed.AddField("Next level", $"next level in {user.Level * 25 - user.Xp}Xp", true);
                     _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
                     _embed.AddField("Activity score", ".......", true);
                     _embed.AddField("Position", $"{position + 1}", true);
                     await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
-                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
+                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: level");
                 }
             }
             catch (Exception e)
@@ -69,14 +69,14 @@ namespace Cat.Discord.Commands
                     {
                         _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"Lvl: {topUsers[i].Level}", true);
                     }
-                    _embed.AddField("Top time connected", "These are the top 9 people with the highest total time connect to a voice channel");
+                    _embed.AddField("Top time connected", "These are the top 9 people with the highest total time connected to a voice channel");
                     topUsers = await unitOfWork.Users.GetTopTimeConnectedUsersAsync(Context.Guild.Id).ConfigureAwait(false);
                     for (var i = 0; i < topUsers.Count; i++)
                     {
                         _embed.AddField($"{i + 1}. {topUsers[i].Name}", $"{topUsers[i].TimeConnected} minutes", true);
                     }
                     await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
-                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: add");
+                    _logger.Log($"Server: {Context.Guild}, Id: {Context.Guild.Id} || ShardId: {Context.Client.ShardId} || Channel: {Context.Channel} || User: {Context.User} || Used: TopUsers");
                 }
             }
             catch (Exception e)
