@@ -27,17 +27,20 @@ namespace Cat.Discord.Commands
             {
                 using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
                 {
-                    var user = await unitOfWork.Users.GetOrAddUserInfoAsync(Context.Guild.Id, Context.User.Id, Context.User.Username).ConfigureAwait(false);
+                    var user = await unitOfWork.Users.GetUserAsync(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
+                    if (user == null)
+                    {
+                        _embed.WithDescription("No account found!\n" +
+                                               "Pls ude **?level** again.");
+                        await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
+                        return;
+                    }
                     var position = await unitOfWork.Users.FindPosition(Context.Guild.Id, Context.User.Id).ConfigureAwait(false);
                     _embed.WithTitle($"Info for {Context.User.Username}");
-                    if (user != null)
-                    {
-                        _embed.AddField("Level", $"{user.Level}", true);
-                        _embed.AddField("Xp", $"{user.Xp}", true);
-                        _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25) - user.Xp}Xp", true);
-                        _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
-                    }
-
+                    _embed.AddField("Level", $"{user.Level}", true);
+                    _embed.AddField("Xp", $"{user.Xp}", true);
+                    _embed.AddField("Next level", $"next level in {user.Level * (user.Level + 25) - user.Xp}Xp", true);
+                    _embed.AddField("Total time connected", $"{user.TimeConnected}", true);
                     _embed.AddField("Join date", $"{Context.Guild.GetUser(Context.User.Id).JoinedAt:MM/dd/yyyy}", true);
                     _embed.AddField("Position", $"{position + 1}", true);
                     await ReplyAsync("", false, _embed.Build()).ConfigureAwait(false);
