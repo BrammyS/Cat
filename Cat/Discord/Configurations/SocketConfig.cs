@@ -10,8 +10,8 @@ namespace Cat.Discord.Configurations
             return new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Info,
-                AlwaysDownloadUsers = false,
-                MessageCacheSize = 0
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 99999
             };
         }
     }

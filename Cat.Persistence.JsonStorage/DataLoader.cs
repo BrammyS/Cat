@@ -38,9 +38,11 @@ namespace Cat.Persistence.JsonStorage
                         MessagesSend = 0,
                         TimeConnected = oldUserAccount.TotalTimeConnected,
                         Xp = oldUserAccount.Xp,
-                        CommandUsed = DateTime.Now.AddDays(-1),
+                        CommandUsed = DateTime.Now.AddSeconds(-5),
                         Name = oldUserAccount.Username,
-                        SpamWarning = 0
+                        SpamWarning = 0,
+                        LastEmoteAdded = DateTime.Now,
+                        TimesTimedOut = 0
                     });
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine($"Adding: {oldUserAccount.Username}");
