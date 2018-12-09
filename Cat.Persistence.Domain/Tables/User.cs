@@ -16,6 +16,7 @@ namespace Cat.Persistence.Domain.Tables
         public decimal TimesTimedOut { get; set; }
         public decimal MessagesSend { get; set; }
         public DateTime LastMessageSend { get; set; }
+        public DateTime LastEmoteAdded { get; set; }
         public DateTime LastVoiceStateUpdateReceived { get; set; }
 
         public Server Server { get; set; }

@@ -37,7 +37,8 @@ namespace Cat.Persistence.EntityFrameworkCore.Repositories
                 LastVoiceStateUpdateReceived = DateTime.Now.AddSeconds(-10),
                 SpamWarning = 0,
                 Name = userName,
-                TimesTimedOut = 0
+                TimesTimedOut = 0,
+                LastEmoteAdded = DateTime.Now
             }).ConfigureAwait(false);
             await Context.SaveChangesAsync().ConfigureAwait(false);
             return user.Entity;

@@ -23,6 +23,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Configurations
             builder.Property(x => x.Level).HasColumnType("numeric(20,0)").HasColumnName("Level").IsRequired();
             builder.Property(x => x.MessagesSend).HasColumnType("numeric(20,0)").HasColumnName("MessagesSend").IsRequired();
             builder.Property(x => x.LastMessageSend).HasColumnType("datetime").HasColumnName("LastMessageSend").IsRequired();
+            builder.Property(x => x.LastEmoteAdded).HasColumnType("datetime").HasColumnName("LastEmoteAdded").IsRequired();
             builder.Property(x => x.LastVoiceStateUpdateReceived).HasColumnType("datetime").HasColumnName("LastVoiceStateUpdateReceived").IsRequired().ValueGeneratedOnAdd();
 
             builder.HasOne(x => x.Server).WithMany(x => x.Users)
