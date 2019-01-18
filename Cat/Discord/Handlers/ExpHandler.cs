@@ -87,6 +87,7 @@ namespace Cat.Discord.Handlers
         {
             if (!(msg is SocketUserMessage message)) return;
             if (message.Author.IsBot) return;
+            if(message.Channel.Id == 377895556204331008) return;
             var context = new ShardedCommandContext(_client, message);
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
@@ -98,18 +99,21 @@ namespace Cat.Discord.Handlers
                 
                 
                 if(!userRoleIds.Contains(NewbieId) && !userRoleIds.Contains(PaperId)) return;
-                //newbie
-                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 120 && user.MessagesSend > 3000 && user.TimeConnected > 1440 && userRoleIds.Contains(NewbieId))
+                // newbie to reg
+                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 120 && user.MessagesSend > 2000 && user.TimeConnected > 720 && userRoleIds.Contains(NewbieId))
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(RegularId)).ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(377895556204331008).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
                 }
 
-                //paper
+                // paper to newbie
                 else if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 30 && user.MessagesSend > 300 && userRoleIds.Contains(PaperId))
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(PaperId)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(377895556204331008).SendMessageAsync($"{context.User.Mention} You are now on the newbie roster. :tada:").ConfigureAwait(false);
+
                 }
             }
         }
