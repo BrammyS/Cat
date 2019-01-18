@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
 using Cat.Discord.Services;
@@ -14,7 +15,9 @@ namespace Cat.Discord.Handlers
     {
         private readonly IExpService _expService;
         private DiscordShardedClient _client;
-
+        private const ulong PaperId = 490448298222551042;
+        private const ulong NewbieId = 403512698651803648;
+        private const ulong RegularId = 405523248634396673;
         public ExpHandler(IExpService expService)
         {
             _expService = expService;
@@ -23,24 +26,28 @@ namespace Cat.Discord.Handlers
         public void Initialize(DiscordShardedClient client)
         {
             _client = client;
-            _client.ReactionAdded += ReactionAdded;
-            _client.MessageReceived += MessageReceived;
-            _client.UserVoiceStateUpdated += UserVoiceStateUpdated;
+            _client.ReactionAdded += ReactionAddedEvent; ;
+            _client.MessageReceived += MessageReceivedEvent; ;
+            _client.UserVoiceStateUpdated += UserVoiceStateUpdatedEvent; 
         }
 
-        private async Task ReactionAdded(Cacheable<IUserMessage, ulong> cacheAbleMessage, ISocketMessageChannel channel, SocketReaction reaction)
+        private Task ReactionAddedEvent(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
         {
-            await ReactionAddedAsync(reaction).ConfigureAwait(false);
+            Task.Run(async () => await  ReactionAddedAsync(arg3).ConfigureAwait(false));
+            return Task.CompletedTask;
         }
 
-        private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState state1, SocketVoiceState state2)
+        private Task MessageReceivedEvent(SocketMessage arg)
         {
-            await UserVoiceStateUpdatedAsync(user, state1, state2).ConfigureAwait(false);
+            Task.Run(async () => await MessageReceivedAsync(arg).ConfigureAwait(false));
+            Task.Run(async () => await HandleBumUpAsync(arg).ConfigureAwait(false));
+            return Task.CompletedTask;
         }
 
-        private async Task MessageReceived(SocketMessage msg)
+        private Task UserVoiceStateUpdatedEvent(SocketUser user, SocketVoiceState state1, SocketVoiceState state2)
         {
-            await MessageReceivedAsync(msg).ConfigureAwait(false);
+            Task.Run(async () => await UserVoiceStateUpdatedAsync(user, state1, state2).ConfigureAwait(false));
+            return Task.CompletedTask;
         }
 
         private async Task ReactionAddedAsync(SocketReaction reaction)
@@ -73,6 +80,37 @@ namespace Cat.Discord.Handlers
                 }
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task HandleBumUpAsync(SocketMessage msg)
+        {
+            if (!(msg is SocketUserMessage message)) return;
+            if (message.Author.IsBot) return;
+            var context = new ShardedCommandContext(_client, message);
+            using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
+            {
+                var guildUser = context.Guild.GetUser(context.User.Id);
+                if (!guildUser.JoinedAt.HasValue) return;
+                var userRoleIds = guildUser.Roles.Select(x => x.Id).ToList();
+                var user = await unitOfWork.Users.GetUserAsync(context.Guild.Id, context.User.Id).ConfigureAwait(false);
+                if(user == null) return;
+                
+                
+                if(!userRoleIds.Contains(NewbieId) && !userRoleIds.Contains(PaperId)) return;
+                //newbie
+                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 120 && user.MessagesSend > 3000 && user.TimeConnected > 1440 && userRoleIds.Contains(NewbieId))
+                {
+                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(context.Guild.GetRole(RegularId)).ConfigureAwait(false);
+                }
+
+                //paper
+                else if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 30 && user.MessagesSend > 300 && userRoleIds.Contains(PaperId))
+                {
+                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(PaperId)).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
+                }
             }
         }
 
