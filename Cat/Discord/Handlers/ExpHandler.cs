@@ -67,16 +67,16 @@ namespace Cat.Discord.Handlers
         private async Task UserVoiceStateUpdatedAsync(SocketUser socketUser, SocketVoiceState oldState, SocketVoiceState newState)
         {
             if (!(socketUser is SocketGuildUser guildUser)) return;
-            if (guildUser.IsBot) return;
             using (var unitOfWork = Unity.Resolve<IUnitOfWork>())
             {
                 var user = await unitOfWork.Users.GetOrAddUserInfoAsync(guildUser.Guild.Id, guildUser.Id, guildUser.Username).ConfigureAwait(false);
                 if (oldState.VoiceChannel == null) user.LastVoiceStateUpdateReceived = DateTime.Now;
-                if (newState.VoiceChannel == null)
+                else if (newState.VoiceChannel == null && oldState.VoiceChannel.Id != 385163793258381333)
                 {
+                    if(oldState.IsSelfMuted || oldState.IsSelfDeafened) return;
                     var timeDiff = (decimal)DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMinutes;
                     user.TimeConnected += timeDiff;
-                    await _expService.GiveXp(timeDiff / 2, user, guildUser.Guild, socketUser, unitOfWork).ConfigureAwait(false);
+                    await _expService.GiveXp(timeDiff / 5, user, guildUser.Guild, socketUser, unitOfWork).ConfigureAwait(false);
                 }
 
                 await unitOfWork.SaveAsync().ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace Cat.Discord.Handlers
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(RegularId)).ConfigureAwait(false);
-                    await context.Guild.GetTextChannel(377895556204331008).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(535282929493082122).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
                 }
 
                 // paper to newbie
