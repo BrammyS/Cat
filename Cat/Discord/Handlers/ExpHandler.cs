@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
 using Cat.Discord.Services;
-using Cat.Persistence.Domain.Tables;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Discord;
 using Discord.Commands;
@@ -15,9 +14,6 @@ namespace Cat.Discord.Handlers
     {
         private readonly IExpService _expService;
         private DiscordShardedClient _client;
-        private const ulong PaperId = 490448298222551042;
-        private const ulong NewbieId = 403512698651803648;
-        private const ulong RegularId = 405523248634396673;
         public ExpHandler(IExpService expService)
         {
             _expService = expService;
@@ -26,8 +22,8 @@ namespace Cat.Discord.Handlers
         public void Initialize(DiscordShardedClient client)
         {
             _client = client;
-            _client.ReactionAdded += ReactionAddedEvent; ;
-            _client.MessageReceived += MessageReceivedEvent; ;
+            _client.ReactionAdded += ReactionAddedEvent;
+            _client.MessageReceived += MessageReceivedEvent;
             _client.UserVoiceStateUpdated += UserVoiceStateUpdatedEvent; 
         }
 
@@ -98,20 +94,20 @@ namespace Cat.Discord.Handlers
                 if(user == null) return;
                 
                 
-                if(!userRoleIds.Contains(NewbieId) && !userRoleIds.Contains(PaperId)) return;
+                if(!userRoleIds.Contains(Constants.RoleIds.NewbieRoster) && !userRoleIds.Contains(Constants.RoleIds.PaperRoster)) return;
                 // newbie to reg
-                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 120 && user.MessagesSend > 2000 && user.TimeConnected > 720 && userRoleIds.Contains(NewbieId))
+                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 30 && (user.MessagesSend > 1000 || user.TimeConnected > 420) && userRoleIds.Contains(Constants.RoleIds.NewbieRoster))
                 {
-                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
-                    await guildUser.AddRoleAsync(context.Guild.GetRole(RegularId)).ConfigureAwait(false);
+                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.RegularRoster)).ConfigureAwait(false);
                     await context.Guild.GetTextChannel(535282929493082122).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
                 }
 
                 // paper to newbie
-                else if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 30 && user.MessagesSend > 300 && userRoleIds.Contains(PaperId))
+                else if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 7 && (user.MessagesSend > 100 || user.TimeConnected > 60) && userRoleIds.Contains(Constants.RoleIds.PaperRoster))
                 {
-                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(PaperId)).ConfigureAwait(false);
-                    await guildUser.AddRoleAsync(context.Guild.GetRole(NewbieId)).ConfigureAwait(false);
+                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.PaperRoster)).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
                     await context.Guild.GetTextChannel(377895556204331008).SendMessageAsync($"{context.User.Mention} You are now on the newbie roster. :tada:").ConfigureAwait(false);
 
                 }
