@@ -67,7 +67,7 @@ namespace Cat.Discord.Handlers
             {
                 var user = await unitOfWork.Users.GetOrAddUserInfoAsync(guildUser.Guild.Id, guildUser.Id, guildUser.Username).ConfigureAwait(false);
                 if (oldState.VoiceChannel == null) user.LastVoiceStateUpdateReceived = DateTime.Now;
-                else if (newState.VoiceChannel == null && oldState.VoiceChannel.Id != 385163793258381333)
+                else if (newState.VoiceChannel == null && oldState.VoiceChannel.Id != Constants.ChannelIds.VoiceChannelIds.Afk)
                 {
                     if(oldState.IsSelfMuted || oldState.IsSelfDeafened) return;
                     var timeDiff = (decimal)DateTime.Now.Subtract(user.LastVoiceStateUpdateReceived).TotalMinutes;
@@ -100,7 +100,7 @@ namespace Cat.Discord.Handlers
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.RegularRoster)).ConfigureAwait(false);
-                    await context.Guild.GetTextChannel(535282929493082122).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(Constants.ChannelIds.TextChannelIds.RegularPub).SendMessageAsync($"{context.User.Mention} You are now on the regular roster. :tada:").ConfigureAwait(false);
                 }
 
                 // paper to newbie
@@ -108,7 +108,7 @@ namespace Cat.Discord.Handlers
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.PaperRoster)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
-                    await context.Guild.GetTextChannel(377895556204331008).SendMessageAsync($"{context.User.Mention} You are now on the newbie roster. :tada:").ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(Constants.ChannelIds.TextChannelIds.Bot).SendMessageAsync($"{context.User.Mention} You are now on the newbie roster. :tada:").ConfigureAwait(false);
 
                 }
             }
