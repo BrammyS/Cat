@@ -13,5 +13,25 @@
             public const ulong NewbieRoster = 403512698651803648;
             public const ulong PaperRoster = 490448298222551042;
         }
+
+        public class ChannelIds
+        {
+            public class TextChannelIds
+            {
+                public const ulong RegularPub = 535282929493082122;
+                public const ulong Pudding = 403342623730958347;
+                public const ulong Bot = 377895556204331008;
+            }
+
+            public class VoiceChannelIds
+            {
+                public const ulong Afk = 385163793258381333;
+            }
+        }
+
+        public class GuildIds
+        {
+            public const ulong Los = 224949218639478784;
+        }
     }
 }
