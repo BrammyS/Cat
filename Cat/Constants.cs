@@ -21,6 +21,7 @@
                 public const ulong RegularPub = 535282929493082122;
                 public const ulong Pudding = 403342623730958347;
                 public const ulong Bot = 377895556204331008;
+                public const ulong LogChannel = 600276407205232651;
             }
 
             public class VoiceChannelIds

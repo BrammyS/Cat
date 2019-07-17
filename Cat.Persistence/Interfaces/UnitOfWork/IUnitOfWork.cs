@@ -8,6 +8,7 @@ namespace Cat.Persistence.Interfaces.UnitOfWork
     {
         IServerRepository Servers { get; }
         IUserRepository Users { get; }
+        ILogsRepository Logs { get; }
         int Save();
         Task<int> SaveAsync();
     }

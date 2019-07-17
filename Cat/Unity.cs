@@ -16,7 +16,6 @@ using Discord.WebSocket;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
-using Unity.Resolution;
 
 namespace Cat
 {
@@ -38,7 +37,7 @@ namespace Cat
             container = new UnityContainer();
             container.RegisterType<ILogger, Logger>(new PerThreadLifetimeManager());
 
-            container.RegisterSingleton<DiscordSocketConfig>(new InjectionFactory(i => SocketConfig.GetDefault()));
+            container.RegisterFactory<DiscordSocketConfig>(i => SocketConfig.GetDefault(), new SingletonLifetimeManager());
             container.RegisterSingleton<DiscordShardedClient>(new InjectionConstructor(typeof(DiscordSocketConfig)));
 
             container.RegisterSingleton<IConnection, Connection>();
@@ -52,13 +51,14 @@ namespace Cat
             container.RegisterType<IUnitOfWork, UnitOfWork>(new PerResolveLifetimeManager());
             container.RegisterType<IServerRepository, ServerRepository>(new PerResolveLifetimeManager());
             container.RegisterType<IUserRepository, UserRepository>(new PerResolveLifetimeManager());
+            container.RegisterType<ILogsRepository, LogsRepository>(new PerResolveLifetimeManager());
 
             container.RegisterType<IDiscordLogger, DiscordLogger>(new PerThreadLifetimeManager());
         }
 
         public static T Resolve<T>()
         {
-            return (T)Container.Resolve(typeof(T), string.Empty, new CompositeResolverOverride());
+            return (T)Container.Resolve(typeof(T));
         }
     }
 }

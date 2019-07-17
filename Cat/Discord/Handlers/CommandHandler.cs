@@ -47,10 +47,11 @@ namespace Cat.Discord.Handlers
                 .AddScoped<IUnitOfWork, UnitOfWork>()
                 .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<IServerRepository, ServerRepository>()
+                .AddScoped<ILogsRepository, LogsRepository>()
                 .AddScoped<IDiscordLogger, DiscordLogger>()
                 .AddScoped<ILogger, Logger>()
                 .BuildServiceProvider();
-            await _commandService.AddModulesAsync(Assembly.GetEntryAssembly()).ConfigureAwait(false);
+            await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _services).ConfigureAwait(false);
             _commandService.Log += CommandServiceLogAsync;
             _client.MessageReceived += HandleCommandEventAsync;
         }

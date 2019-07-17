@@ -26,7 +26,7 @@ namespace Cat.Discord.Services.Implementations
         {
             Task.Run(() =>
             {
-                var filePath = $"Logs/{folder}/{DateTime.Now:MMMM, yyyy}";
+                var filePath = $"Log/{folder}/{DateTime.Now:MMMM, yyyy}";
                 if (!File.Exists(filePath)) Directory.CreateDirectory(filePath);
 
                 filePath += $"/{DateTime.Now:dddd, MMMM d, yyyy}.txt";

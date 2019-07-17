@@ -8,6 +8,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Models
     {
         public virtual DbSet<Server> Servers { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,6 +21,7 @@ namespace Cat.Persistence.EntityFrameworkCore.Models
         {
             modelBuilder.ApplyConfiguration(new ServerConfigurations());
             modelBuilder.ApplyConfiguration(new UserConfigurations());
+            modelBuilder.ApplyConfiguration(new LogsConfigurations());
         }
     }
 }
