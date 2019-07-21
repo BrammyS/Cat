@@ -129,7 +129,7 @@ namespace Cat.Discord.Handlers
                                              new EmbedFieldBuilder
                                              {
                                                  Name = "Channel",
-                                                 Value = $"#{channel.Name}",
+                                                 Value = $"{_client.GetGuild(Constants.GuildIds.Los).GetTextChannel(newMessage.Channel.Id).Mention}",
                                                  IsInline = false
                                              }
                                          }
@@ -151,32 +151,73 @@ namespace Cat.Discord.Handlers
         {
             try
             {
-                if(!message.HasValue && string.IsNullOrEmpty(message.Value.Content)) return;
+                if(!message.HasValue) return;
                 if(message.Value.Author.IsWebhook || message.Value.Author.IsBot || message.Value.Content.Contains("?r", StringComparison.CurrentCultureIgnoreCase)) return;
-                var embed = new EmbedBuilder
-                            {
-                                Timestamp = DateTimeOffset.UtcNow,
-                                Color = Color.Orange,
-                                Title = "Message deleted",
-                                Description = message.Value.Content,
-                                Author = new EmbedAuthorBuilder
-                                         {
-                                             Name = $"{GetFullUserName(message.Value.Author.Username, message.Value.Author.Discriminator)}",
-                                             IconUrl = message.Value.Author.GetAvatarUrl()
-                                },
-                                Fields = new List<EmbedFieldBuilder>
-                                         {
-                                             new EmbedFieldBuilder
-                                             {
-                                                 Name = "Channel",
-                                                 Value = $"#{channel.Name}",
-                                                 IsInline = true
-                                             }
-                                         }
-                            };
-                await _client.GetGuild(Constants.GuildIds.Los)
-                             .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
-                             .SendMessageAsync("", false,embed.Build()).ConfigureAwait(false);
+                
+                var firstAttachment = message.Value.Attachments.FirstOrDefault();
+                if (firstAttachment != null && (firstAttachment.ProxyUrl.Contains(".png") 
+                                                || firstAttachment.ProxyUrl.Contains(".jpg") 
+                                                || firstAttachment.ProxyUrl.Contains(".webp")
+                                                || firstAttachment.ProxyUrl.Contains(".webm")
+                                                || firstAttachment.ProxyUrl.Contains(".mp4")
+                                                || firstAttachment.ProxyUrl.Contains(".gif") 
+                                                || firstAttachment.ProxyUrl.Contains(".jpeg")))
+                {
+                    var newEmbed = new EmbedBuilder
+                                   {
+                                       Timestamp = DateTimeOffset.UtcNow,
+                                       Color = Color.Orange,
+                                       Title = "Image deleted",
+                                       Description = message.Value.Content,
+                                       Url = firstAttachment.ProxyUrl,
+                                       ImageUrl = firstAttachment.ProxyUrl,
+                                       Author = new EmbedAuthorBuilder
+                                                {
+                                                    Name = $"{GetFullUserName(message.Value.Author.Username, message.Value.Author.Discriminator)}",
+                                                    IconUrl = message.Value.Author.GetAvatarUrl()
+                                                },
+                                       Fields = new List<EmbedFieldBuilder>
+                                                {
+                                                    new EmbedFieldBuilder
+                                                    {
+                                                        Name = "Channel",
+                                                        Value = $"{_client.GetGuild(Constants.GuildIds.Los).GetTextChannel(message.Value.Channel.Id).Mention}",
+                                                        IsInline = true
+                                                    }
+                                                }
+                                   };
+                    await _client.GetGuild(Constants.GuildIds.Los)
+                                 .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
+                                 .SendMessageAsync("", false, newEmbed.Build()).ConfigureAwait(false);
+                }
+                else
+                {
+                    var newEmbed = new EmbedBuilder
+                                   {
+                                       Timestamp = DateTimeOffset.UtcNow,
+                                       Color = Color.Orange,
+                                       Title = "Message deleted",
+                                       Description = message.Value.Content,
+                                       Author = new EmbedAuthorBuilder
+                                                {
+                                                    Name = $"{GetFullUserName(message.Value.Author.Username, message.Value.Author.Discriminator)}",
+                                                    IconUrl = message.Value.Author.GetAvatarUrl()
+                                                },
+                                       Fields = new List<EmbedFieldBuilder>
+                                                {
+                                                    new EmbedFieldBuilder
+                                                    {
+                                                        Name = "Channel",
+                                                        Value = $"{_client.GetGuild(Constants.GuildIds.Los).GetTextChannel(message.Value.Channel.Id).Mention}",
+                                                        IsInline = true
+                                                    }
+                                                }
+                                   };
+                    await _client.GetGuild(Constants.GuildIds.Los)
+                                 .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
+                                 .SendMessageAsync("", false, newEmbed.Build()).ConfigureAwait(false);
+                }
+
             }
             catch (Exception e)
             {
