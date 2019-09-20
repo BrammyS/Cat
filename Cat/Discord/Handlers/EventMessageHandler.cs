@@ -29,7 +29,14 @@ namespace Cat.Discord.Handlers
             _client.UserUnbanned += UserUnbanned;
             _client.MessageDeleted += MessageDeleted;
             _client.UserLeft += UserKicked;
-            //_client.MessageUpdated += MessageEdited;
+            _client.MessageUpdated += MessageEdited;
+            _client.ReactionRemoved += ReactionRemoved;
+        }
+
+        private Task ReactionRemoved(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel messageChannel, SocketReaction reaction)
+        {
+            Task.Run(async () => await ReactionRemovedAsync(message, messageChannel, reaction).ConfigureAwait(false));
+            return Task.CompletedTask;
         }
 
         private Task UserKicked(SocketGuildUser guildUser)
@@ -96,6 +103,43 @@ namespace Cat.Discord.Handlers
             }
         }
 
+
+        private async Task ReactionRemovedAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel messageChannel, SocketReaction reaction)
+        {
+            try
+            {
+                if(!message.HasValue) return;
+                var newEmbed = new EmbedBuilder
+                               {
+                                   Timestamp = DateTimeOffset.UtcNow,
+                                   Color = Color.Orange,
+                                   Title = "Reaction removed",
+                                   Description = message.Value.Content + "\n\n" +
+                                                 $"**Reaction Author**: {reaction.User.Value.Mention}\n" +
+                                                 $"**Reaction**: {reaction.Emote.Name}",
+                                   Author = new EmbedAuthorBuilder
+                                            {
+                                                Name = $"{GetFullUserName(message.Value.Author.Username, message.Value.Author.Discriminator)}",
+                                                IconUrl = message.Value.Author.GetAvatarUrl()
+                                            },
+                                   Fields = new List<EmbedFieldBuilder>
+                                            {
+                                                new EmbedFieldBuilder
+                                                {
+                                                    Name = "Channel",
+                                                    Value = $"{_client.GetGuild(Constants.GuildIds.Los).GetTextChannel(message.Value.Channel.Id).Mention}",
+                                                    IsInline = true
+                                                }
+                                            }
+                               };
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
         private async Task MessageEditedAsync(Cacheable<IMessage, ulong> oldMessage, SocketMessage newMessage, ISocketMessageChannel channel)
         {
             try
@@ -152,7 +196,7 @@ namespace Cat.Discord.Handlers
             try
             {
                 if(!message.HasValue) return;
-                if(message.Value.Author.IsWebhook || message.Value.Author.IsBot || message.Value.Content.Contains("?r", StringComparison.CurrentCultureIgnoreCase)) return;
+                if(message.Value.Author.IsWebhook || (message.Value.Author.IsBot && message.Value.Author.Id != Constants.BotIds.Cat) || message.Value.Content.Contains("?r", StringComparison.CurrentCultureIgnoreCase)) return;
                 
                 var firstAttachment = message.Value.Attachments.FirstOrDefault();
                 if (firstAttachment != null && (firstAttachment.ProxyUrl.Contains(".png") 

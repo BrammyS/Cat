@@ -19,8 +19,9 @@ namespace Cat.Discord
         private readonly ICommandHandler _commandHandler;
         private readonly IExpHandler _expHandler;
         private readonly EventMessageHandler _eventMsgHandler;
+        private readonly IUserLeftHandler _userLeftHandler;
 
-        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler, IExpHandler expHandler, EventMessageHandler eventMsgHandler)
+        public Connection(DiscordShardedClient client, IDiscordLogger discordLogger, ILogger logger, ICommandHandler commandHandler, IExpHandler expHandler, EventMessageHandler eventMsgHandler, IUserLeftHandler userLeftHandler)
         {
             _client = client;
             _discordLogger = discordLogger;
@@ -28,6 +29,7 @@ namespace Cat.Discord
             _commandHandler = commandHandler;
             _expHandler = expHandler;
             _eventMsgHandler = eventMsgHandler;
+            _userLeftHandler = userLeftHandler;
         }
         
         public async Task ConnectAsync()
@@ -41,6 +43,7 @@ namespace Cat.Discord
             await _commandHandler.InitializeAsync(_client).ConfigureAwait(false);
             _expHandler.Initialize(_client);
             _eventMsgHandler.Initialize(_client);
+            _userLeftHandler.Initialize(_client);
 
             await Task.Delay(ConfigData.Data.RestartTime * 60000).ConfigureAwait(false);
             await _client.StopAsync().ConfigureAwait(false);

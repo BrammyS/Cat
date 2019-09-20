@@ -11,7 +11,8 @@ namespace Cat.Discord.Configurations
             {
                 LogLevel = LogSeverity.Info,
                 AlwaysDownloadUsers = true,
-                MessageCacheSize = 999
+                MessageCacheSize = 999,
+                ExclusiveBulkDelete = true
             };
         }
     }
