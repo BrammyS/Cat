@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Cat.Persistence.Interfaces.UnitOfWork;
 using Cat.Services;
 using Discord;
 using Discord.Commands;

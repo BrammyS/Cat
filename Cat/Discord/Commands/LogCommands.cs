@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cat.Persistence.Interfaces.UnitOfWork;
-using Cat.Services;
 using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 
 namespace Cat.Discord.Commands
 {
@@ -13,16 +10,12 @@ namespace Cat.Discord.Commands
     public class LogCommands : ModuleBase<SocketCommandContext>
     {
 
-        private readonly ILogger _logger;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly EmbedBuilder _embed;
 
 
-        public LogCommands(ILogger logger, IUnitOfWork unitOfWork)
+        public LogCommands(IUnitOfWork unitOfWork)
         {
-            _logger = logger;
             _unitOfWork = unitOfWork;
-            _embed = new EmbedBuilder();
         }
 
 

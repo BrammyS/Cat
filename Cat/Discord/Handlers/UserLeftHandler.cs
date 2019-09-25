@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Cat.Discord.Interfaces;
-using Cat.Discord.Services;
 using Cat.Persistence.Interfaces.UnitOfWork;
 using Discord.WebSocket;
 

@@ -94,9 +94,18 @@ namespace Cat.Discord.Handlers
                 if(user == null) return;
                 
                 
-                if(!userRoleIds.Contains(Constants.RoleIds.NewbieRoster) && !userRoleIds.Contains(Constants.RoleIds.PaperRoster)) return;
+                if(!userRoleIds.Contains(Constants.RoleIds.NewbieRoster) && !userRoleIds.Contains(Constants.RoleIds.PaperRoster) && !userRoleIds.Contains(Constants.RoleIds.RegularRoster)) return;
+
+                // reg to hero
+                if (userRoleIds.Contains(Constants.RoleIds.RegularRoster) && DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 365 && user.MessagesSend > 10000 && user.TimeConnected > 4000)
+                {
+                    await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.RegularRoster)).ConfigureAwait(false);
+                    await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.HeroRoster)).ConfigureAwait(false);
+                    await context.Guild.GetTextChannel(Constants.ChannelIds.TextChannelIds.LosHeroes).SendMessageAsync($"{context.User.Mention} Welcome to the hero squad. :tada:").ConfigureAwait(false);
+                }
+
                 // newbie to reg
-                if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 60 && (user.MessagesSend > 2500 || user.TimeConnected > 1000) && userRoleIds.Contains(Constants.RoleIds.NewbieRoster))
+                else if (userRoleIds.Contains(Constants.RoleIds.NewbieRoster) && DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 60 && (user.MessagesSend > 3000 || user.TimeConnected > 1500))
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.RegularRoster)).ConfigureAwait(false);
@@ -104,7 +113,7 @@ namespace Cat.Discord.Handlers
                 }
 
                 // paper to newbie
-                else if (DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 14 && (user.MessagesSend > 150 || user.TimeConnected > 90) && userRoleIds.Contains(Constants.RoleIds.PaperRoster))
+                else if (userRoleIds.Contains(Constants.RoleIds.PaperRoster) && DateTime.Now.Subtract(guildUser.JoinedAt.Value.Date).TotalDays > 14 && (user.MessagesSend > 150 || user.TimeConnected > 90))
                 {
                     await guildUser.RemoveRoleAsync(context.Guild.GetRole(Constants.RoleIds.PaperRoster)).ConfigureAwait(false);
                     await guildUser.AddRoleAsync(context.Guild.GetRole(Constants.RoleIds.NewbieRoster)).ConfigureAwait(false);
