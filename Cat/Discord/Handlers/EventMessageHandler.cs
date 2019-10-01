@@ -102,6 +102,7 @@ namespace Cat.Discord.Handlers
             try
             {
                 if (!oldMessage.HasValue) return;
+                if(newMessage.Content == oldMessage.Value.Content) return;
                 var oldMessageContent = oldMessage.Value.Content;
                 var newMessageContent = newMessage.Content;
                 var embed = new EmbedBuilder
