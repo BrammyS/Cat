@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.106
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat", "Cat\Cat.csproj", "{519B5902-90EA-4256-B45F-10B0DC7606D7}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence.Domain", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence.EntityFrameworkCore", "Cat.Persistence.EntityFrameworkCore\Cat.Persistence.EntityFrameworkCore.csproj", "{0372BFDF-3DE1-4E9A-9FA8-DB0154F2A6D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Persistence.JsonStorage", "Cat.Persistence.JsonStorage\Cat.Persistence.JsonStorage.csproj", "{4E263337-3B15-47E1-8731-1EB694478475}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cat.Persistence.JsonStorage", "Cat.Persistence.JsonStorage\Cat.Persistence.JsonStorage.csproj", "{4E263337-3B15-47E1-8731-1EB694478475}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cat.Quiz.Server", "Cat.Quiz.Server\Cat.Quiz.Server.csproj", "{5E13D765-B87C-4037-92E6-0FC174090C61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{4E263337-3B15-47E1-8731-1EB694478475}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E263337-3B15-47E1-8731-1EB694478475}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E263337-3B15-47E1-8731-1EB694478475}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E13D765-B87C-4037-92E6-0FC174090C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E13D765-B87C-4037-92E6-0FC174090C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E13D765-B87C-4037-92E6-0FC174090C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E13D765-B87C-4037-92E6-0FC174090C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
