@@ -30,7 +30,9 @@ namespace Cat.Discord.Handlers
             _client.MessageDeleted += MessageDeleted;
             _client.UserLeft += UserKicked;
             _client.MessageUpdated += MessageEdited;
+            _client.UserUpdated += UserChangedAsync;
         }
+
 
         private Task UserKicked(SocketGuildUser guildUser)
         {
@@ -357,6 +359,50 @@ namespace Cat.Discord.Handlers
                     var message = $"{newUser.Mention} welcome to the puddings!\n" +
                                   $"This is our own little safe space for the women in LoS, if you have any questions or anything, feel free to message {_client.GetUser(163341531514667008).Mention} :purple_heart:";
                     await _client.GetGuild(Constants.GuildIds.Los).GetTextChannel(Constants.ChannelIds.TextChannelIds.Pudding).SendMessageAsync(message).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        private async Task UserChangedAsync(SocketUser oldUser, SocketUser newUser)
+        {
+            try
+            {
+                if (oldUser.Username != newUser.Username || oldUser.Discriminator != newUser.Discriminator)
+                {
+                    var newEmbed = new EmbedBuilder
+                    {
+                        Timestamp = DateTimeOffset.UtcNow,
+                        Color = Color.Orange,
+                        Title = "Username changed",
+                        Description = $"User {oldUser.Username} changed to {newUser.Username}",
+                        Author = new EmbedAuthorBuilder
+                        {
+                            Name = $"{GetFullUserName(newUser.Username, newUser.Discriminator)}",
+                            IconUrl = newUser.GetAvatarUrl()
+                        },
+                        Fields = new List<EmbedFieldBuilder>
+                        {
+                            new EmbedFieldBuilder
+                            {
+                                Name = "Old name",
+                                Value = $"{GetFullUserName(oldUser.Username, oldUser.Discriminator)}",
+                                IsInline = true
+                            },
+                             new EmbedFieldBuilder
+                            {
+                                Name = "New name",
+                                Value =  $"{GetFullUserName(newUser.Username, newUser.Discriminator)}",
+                                IsInline = true
+                            }
+                        }
+                    };
+                    await _client.GetGuild(Constants.GuildIds.Los)
+                        .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
+                        .SendMessageAsync("", false, newEmbed.Build()).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
