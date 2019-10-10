@@ -25,15 +25,16 @@ namespace Cat.Discord.Handlers
             _client = client;
             _client.GuildMemberUpdated += PuddingAdded;
             _client.GuildMemberUpdated += LogMemberUpdate;
+            _client.GuildMemberUpdated += UserChangedAsync;
             _client.UserBanned += UserBanned;
             _client.UserUnbanned += UserUnbanned;
             _client.MessageDeleted += MessageDeleted;
-            _client.UserLeft += UserKicked;
+            //_client.UserLeft += UserKicked;
             _client.MessageUpdated += MessageEdited;
-            _client.UserUpdated += UserChangedAsync;
         }
 
 
+        // ReSharper disable once UnusedMember.Local
         private Task UserKicked(SocketGuildUser guildUser)
         {
             Task.Run(async () => await UserKickedAsync(guildUser).ConfigureAwait(false));
@@ -367,42 +368,46 @@ namespace Cat.Discord.Handlers
             }
         }
 
-        private async Task UserChangedAsync(SocketUser oldUser, SocketUser newUser)
+        private async Task UserChangedAsync(SocketGuildUser oldUser, SocketGuildUser newUser)
         {
             try
             {
-                if (oldUser.Username != newUser.Username || oldUser.Discriminator != newUser.Discriminator)
+                if (oldUser.Username != newUser.Username || oldUser.Discriminator != newUser.Discriminator || oldUser.Nickname != newUser.Nickname)
                 {
+                    var desc = $"**{oldUser.Username}** changed username to **{newUser.Username}**";
+                    if (oldUser.Nickname != newUser.Mention && newUser.Nickname != newUser.Username) desc = $"**{oldUser.Username}** changed their nickname to **{newUser.Nickname}**";
                     var newEmbed = new EmbedBuilder
-                    {
-                        Timestamp = DateTimeOffset.UtcNow,
-                        Color = Color.Orange,
-                        Title = "Username changed",
-                        Description = $"User {oldUser.Username} changed to {newUser.Username}",
-                        Author = new EmbedAuthorBuilder
-                        {
-                            Name = $"{GetFullUserName(newUser.Username, newUser.Discriminator)}",
-                            IconUrl = newUser.GetAvatarUrl()
-                        },
-                        Fields = new List<EmbedFieldBuilder>
-                        {
-                            new EmbedFieldBuilder
-                            {
-                                Name = "Old name",
-                                Value = $"{GetFullUserName(oldUser.Username, oldUser.Discriminator)}",
-                                IsInline = true
-                            },
-                             new EmbedFieldBuilder
-                            {
-                                Name = "New name",
-                                Value =  $"{GetFullUserName(newUser.Username, newUser.Discriminator)}",
-                                IsInline = true
-                            }
-                        }
-                    };
+                                   {
+                                       Timestamp = DateTimeOffset.UtcNow,
+                                       Color = Color.Orange,
+                                       Title = "Username changed",
+                                       Description = desc,
+                                       Author = new EmbedAuthorBuilder
+                                                {
+                                                    Name = $"{GetFullUserName(newUser.Username, newUser.Discriminator)}",
+                                                    IconUrl = newUser.GetAvatarUrl()
+                                                },
+                                       Fields = new List<EmbedFieldBuilder>
+                                                {
+                                                    new EmbedFieldBuilder
+                                                    {
+                                                        Name = "Old name",
+                                                        Value = $"Username: {GetFullUserName(oldUser.Username, oldUser.Discriminator)}\n" +
+                                                                $"Nickname: {oldUser.Nickname}",
+                                                        IsInline = true
+                                                    },
+                                                    new EmbedFieldBuilder
+                                                    {
+                                                        Name = "New name",
+                                                        Value = $"Username: {GetFullUserName(newUser.Username, newUser.Discriminator)}\n" +
+                                                                $"Nickname: {newUser.Nickname}",
+                                                        IsInline = true
+                                                    }
+                                                }
+                                   };
                     await _client.GetGuild(Constants.GuildIds.Los)
-                        .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
-                        .SendMessageAsync("", false, newEmbed.Build()).ConfigureAwait(false);
+                                 .GetTextChannel(Constants.ChannelIds.TextChannelIds.LogChannel)
+                                 .SendMessageAsync("", false, newEmbed.Build()).ConfigureAwait(false);
                 }
             }
             catch (Exception e)
